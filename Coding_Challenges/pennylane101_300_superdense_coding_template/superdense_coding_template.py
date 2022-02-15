@@ -22,11 +22,19 @@ def superdense_coding(bits, alpha):
     # QHACK #
 
     # Prepare entangled state here
-
+    qml.QubitStateVector(np.array([np.cos(alpha), 0, 0, np.sin(alpha)]), wires=range(2))
     # Implement Alice's operations on her qubit here
+    if bits == 1:
+        qml.PauliX(0)
+    elif bits == 2:
+        qml.PauliZ(0)
+    elif bits == 3:
+        qml.PauliX(0)
+        qml.PauliZ(0)
 
     # Implement Bob's measurement procedure here
-
+    qml.CNOT(wires=[0,1])
+    qml.Hadamard(0)
     # QHACK #
 
     return qml.probs(wires=[0, 1])
