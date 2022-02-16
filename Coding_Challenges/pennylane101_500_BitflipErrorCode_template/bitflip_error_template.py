@@ -24,7 +24,11 @@ def error_wire(circuit_output):
     # QHACK #
 
     # process the circuit output here and return which qubit was the victim of a bitflip error!
-
+    # output = np.zeros(4)
+    # output[0] = 1 - circuit_output[0]
+    # bit_probs[circuit_output[1] + 1] =  circuit_output[0]
+    # for unknown reasons, need to rearrange the output of the circuit
+    return [circuit_output[0], circuit_output[3], circuit_output[2], circuit_output[1]]
     # QHACK #
 
 
@@ -51,14 +55,31 @@ def circuit(p, alpha, tampered_wire):
     # QHACK #
 
     # put any input processing gates here
+    # encodes into alpha|000> + sqrt((1 - alpha))|111>
+    qml.CNOT(wires=[0,1])
+    qml.CNOT(wires=[0,2])
 
     qml.BitFlip(p, wires=int(tampered_wire))
 
     # put any gates here after the bitflip error has occurred
+    qml.CNOT(wires=[0,1])
+    qml.CNOT(wires=[0,2])
+    qml.Toffoli(wires=[1,2,0]) #is this how I specifiy which is the target and which are controls?
 
+    # now, according to what I've read, qubit 0 should be corrected.
     # return something!
     # QHACK #
+    #return  qml.expval(qml.PauliZ(1) @ qml.PauliZ(2))
+    return  qml.probs(wires=[1,2]) #the qubits 1 and 2 should tell us if an error occurred
+    #if 00 --> no error
+    #if 01 --> error on bit 0
+    #if 10 --> error on bit 1
+    #if 11 --> error on bit 2
 
+    #I'm not entirely sure why this works.... :(
+
+    #return qml.state()
+    #return [p, tampered_wire]
 
 def density_matrix(alpha):
     """Creates a density matrix from a pure state."""
@@ -77,6 +98,7 @@ if __name__ == "__main__":
 
     error_readout = np.zeros(4, dtype=float)
     circuit_output = circuit(p, alpha, tampered_wire)
+    #print(circuit_output)
     error_readout = error_wire(circuit_output)
 
     print(*error_readout, sep=",")
