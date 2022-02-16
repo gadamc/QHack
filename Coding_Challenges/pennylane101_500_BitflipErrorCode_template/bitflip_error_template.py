@@ -70,7 +70,8 @@ def circuit(p, alpha, tampered_wire):
     # return something!
     # QHACK #
     #return  qml.expval(qml.PauliZ(1) @ qml.PauliZ(2))
-    return  qml.probs(wires=[1,2]) #the qubits 1 and 2 should tell us if an error occurred
+    return  qml.probs(wires=[1,2]) #the z projection of qubits 1 and 2 should tell us if an error occurred
+    #should be something like this...
     #if 00 --> no error
     #if 01 --> error on bit 0
     #if 10 --> error on bit 1
