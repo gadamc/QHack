@@ -17,6 +17,44 @@ def qfunc_adder(m, wires):
 
     # QHACK #
 
+
+
+    #solution 1
+    #performs a phase shift on each qubit according to the value
+    #of the bits of the adding number (m), as explicitly shown in Draper
+    # mm = format(m, f'0{len(wires)}b')
+    # print(f'raw mm: {mm}')
+    # mm = [int(x) for x in mm]
+    #
+    # def phi(l, bit):
+    #     return 2 * np.pi * bit / 2.0**l
+    #
+    # mm.reverse()
+    # for w in wires: #starting with 0...
+    #     print(f'wire/qubit index: {w}')
+    #     total_phi = 0
+    #     for l in range(w+1):
+    #         _phi = phi(l+1, mm[w - l])
+    #         print(f'l {l}, phase_shift_l+1 {l+1} ( bit_{w-l} = {mm[w-l]} ): phi = {_phi}')
+    #         qml.PhaseShift(_phi, wires=w)
+    #         total_phi += _phi
+    #     print(f'total phase shift phi: {total_phi}')
+
+    #solution 2
+    #combines each of the individual phase shifts above into a single phase shift
+    #by computing the appropriate binary fraction
+
+    mm = format(m, f'0{len(wires)}b')
+
+    def binary_fraction(s):
+        return int(s, 2) / 2.**(len(s))
+
+    for w in wires: #starting with 0...
+        #print(f'wire/qubit index: {w}')
+        _phi = 2*np.pi*binary_fraction(mm[len(mm)- 1 - w:])
+        #print(f'phase shift phi: {_phi}')
+        qml.PhaseShift(_phi, wires=w)
+
     # QHACK #
 
     qml.QFT(wires=wires).inv()
