@@ -16,12 +16,25 @@ def binary_list(m, n):
         - (list(int)): Binary stored as a list of length n
     """
 
-    arr = []
     # QHACK #
+    return [int(x) for x in format(m, f'0{n}b')]
+    #mm = mm[2:]
+    #print(f'stripped mm: {mm}')
 
     # QHACK #
-    return arr
-
+# wires = list(wires)
+# #wires.reverse()
+# n =len(wires)
+# print(wires)
+# print(m)
+# print(n)
+# mm = format(m, f'0{n}b')
+# print(f'raw mm: {mm}')
+# #mm = mm[2:]
+# #print(f'stripped mm: {mm}')
+#
+# mm = [x for x in mm]
+# mm.reverse()
 
 def basis_states(n):
     """Given a number n, returns a list of all binary_list(m,n) for m < 2**n, thus providing all basis states
@@ -34,13 +47,11 @@ def basis_states(n):
         - (list(list(int))): list of basis states represented as lists of 0s and 1s.
     """
 
-    arr = []
 
     # QHACK #
-
+    return [binary_list(m,n) for m in range(2**n)]
     # QHACK #
 
-    return arr
 
 
 def is_particle_preserving(circuit, n):
@@ -56,8 +67,78 @@ def is_particle_preserving(circuit, n):
     """
 
     # QHACK #
-
+    #check the Hamming weight for all of the possible states for a circuit with n wires
+    for a_state in basis_states(n):
+        quantum_state = circuit(a_state)
+        output_state_occupancy = [np.binary_repr(i, width=n) for i in range(len(quantum_state)) if quantum_state[i] != 0]
+        n_part_in = np.sum(a_state)
+        for os in output_state_occupancy:
+            osa = [int(x) for x in os]
+            n_part_out = np.sum(osa)
+            if n_part_in != n_part_out:
+                # print(f'a_state in {a_state}')
+                # print(f'q_state out {osa}')
+                return False
+    return True
     # QHACK #
+
+#
+# def read_file(fname):
+#     # DO NOT MODIFY anything in this code block
+#     f = open(fname, 'r')
+#     inputs = f.read().split(";")
+#     gate_list = []
+#     wire_list = []
+#     param_list = []
+#     i = 1
+#
+#     while i < len(inputs):
+#         gate_obj = getattr(qml, str(inputs[i]))
+#         gate_wires = gate_obj.num_wires
+#         input_wires = list(map(int, str(inputs[i + 1]).split(",")))
+#         gate_list.append(str(inputs[i]))
+#         wire_list.append(input_wires)
+#         if "non_parametric_ops" not in gate_obj.__module__.split("."):
+#             input_params = list(map(float, str(inputs[i + 2]).split(",")))
+#             param_list.append(input_params)
+#             i += 1
+#         i += 2
+#
+#     wire_list = np.array(wire_list, dtype=object)
+#     param_list = np.array(param_list, dtype=object)
+#
+#     n = int(inputs[0])
+#
+#     return wire_list, param_list, gate_list, n
+#
+# def build_circuit(wire_list, param_list, gate_list, n):
+#     dev = qml.device("default.qubit", wires=n)
+#     @qml.qnode(dev)
+#     def circ(gate_list, wire_list, param_list, state):
+#         qml.BasisState(np.array(state), wires=range(n))
+#         j = 0
+#         for i in range(len(gate_list)):
+#             gate = getattr(qml, str(gate_list[i]))
+#             if "non_parametric_ops" not in gate.__module__.split("."):
+#                 gate(*param_list[j], wires=[int(w) for w in wire_list[i]])
+#                 j += 1
+#             else:
+#                 gate(wires=[int(w) for w in wire_list[i]])
+#         return qml.state()
+#
+#     def circuit(state):
+#         return circ(gate_list, wire_list, param_list, state)
+#
+#     return circuit
+#
+# def run_circuit(wire_list, param_list, n):
+#
+#     circuit = build_circuit(wire_list, param_list, gate_list, n)
+#
+#     output = is_particle_preserving(circuit, n)
+#
+#     print(output)
+
 
 
 if __name__ == "__main__":
