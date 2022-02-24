@@ -17,6 +17,21 @@ def check_simplification(op1, op2):
     """
 
     # QHACK
+    assert len(op1) == len(op2) #this should be true. See __main__
+    simplification_found = [False]*len(op1)
+
+    for i, elements in enumerate(zip(op1, op2)):
+        op1_element, op2_element = elements
+
+        if op1_element == "I" and op2_element != "I":
+            simplification_found[i] =  True
+        if op2_element == "I" and op1_element != "I":
+            simplification_found[i] =  True
+        if op1_element == op2_element:
+            simplification_found[i] = True
+
+    sf = set(simplification_found)
+    return (len(sf) == 1) & (list(sf)[0] == True)
 
     # QHACK
 
@@ -35,9 +50,19 @@ def join_operators(op1, op2):
     """
 
     # QHACK
+    union = ["I"]*len(op1)
 
+    for i, elements in enumerate(zip(op1, op2)):
+        op1_element, op2_element = elements
+        if op1_element == "I":
+            union[i] =  op2_element
+        if op2_element == "I":
+            union[i] =  op1_element
+        if op1_element == op2_element:
+            union[i] = op1_element
+
+    return union
     # QHACK
-
 
 def optimize_measurements(obs_hamiltonian):
     """This function will go through the list of Pauli words provided in the statement, grouping the operators
@@ -78,7 +103,7 @@ def compression_ratio(obs_hamiltonian, final_solution):
     """
 
     # QHACK
-
+    return 1.0 - len(final_solution)/len(obs_hamiltonian)
     # QHACK
 
 
