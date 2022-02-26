@@ -17,12 +17,29 @@ def distance(A, B):
     """
 
     # QHACK #
+    # print('a, then b')
+    # print(A)
+    # print(B)
+    #
+    # by_hand =  np.sqrt(np.sum([(a_i - b_i)**2 for a_i, b_i in zip(A,B)]))
+    #
+    # dist = np.linalg.norm(np.array(A) - np.array(B))
+    # print(by_hand)
+    # print(dist)
+    # #return dist
 
+
+    unit_vector_1 = np.array(A) / np.linalg.norm(np.array(A))
+    unit_vector_2 = np.array(B) / np.linalg.norm(np.array(B))
+    dot_product = np.dot(unit_vector_1, unit_vector_2)
+    #angle = np.arccos(dot_product)
+    #print(dot_product)
+    return np.sqrt(2*(1 - dot_product))
     # The Swap test is a method that allows you to calculate |<A|B>|^2 , you could use it to help you.
     # The qml.AmplitudeEmbedding operator could help you too.
 
-    # dev = qml.device("default.qubit", ...
-    # @qml.qnode(dev)
+    #dev = qml.device("default.qubit", wires=range(3))
+    #@qml.qnode(dev)
 
     # QHACK #
 
